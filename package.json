@@ -1,0 +1,31 @@
+{
+  "name": "gaming",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "netlify-lambda": "^2.0.8",
+    "serverless-http": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/.bin/netlify-lambda serve src --timeout 1800",
+    "build": "./node_modules/.bin/netlify-lambda build src --timeout 1800",
+    "dev": "npx nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KratosvsEzio/gaming-charts-BE.git"
+  },
+  "author": "aashir",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KratosvsEzio/gaming-charts-BE/issues"
+  },
+  "homepage": "https://github.com/KratosvsEzio/gaming-charts-BE#readme"
+}
