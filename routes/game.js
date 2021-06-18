@@ -11,16 +11,50 @@ routes.get("/", (req, res, next) => {
 
 routes.get("/select_top_by_playtime", (req, res, next) => {
 
-    let select_top_by_playtime = [];
+    let select_top_by_playtime = filters(req);
+
+    // Filter games array in decending order according to game playtime.
+    select_top_by_playtime = select_top_by_playtime.sort(function (a, b) {
+        return b.totalPlayTime - a.totalPlayTime;
+    });
+
+    // send res back to client
+    res.status(200).json({
+        message: 'Games fetched successfully!',
+        data: select_top_by_playtime,
+        code: 200
+    });
+})
+
+routes.get("/select_top_by_players", (req, res, next) => {
+
+    let select_top_by_player = filters(req);
+    
+    // Filter games array in decending order according to game players.
+    select_top_by_player = select_top_by_player.sort(function (a, b) {
+        return b.totalPlayers - a.totalPlayers;
+    });
+
+    // send res back to client
+    res.status(200).json({
+        message: 'Games fetched successfully!',
+        data: select_top_by_player,
+        code: 200
+    });
+})
+
+function filters(req) {
+
+    let gamesArray = [];
     let uniqueGames = new Set();
 
     games.data.forEach( (game) => {
-        if(select_top_by_playtime.length !== 0) {
+        if(gamesArray.length !== 0) {
             console.log('not empty')
             console.log('Check existing game', game.game, !uniqueGames.has(game.game));
             if(!uniqueGames.has(game.game)) {
                 uniqueGames.add(game.game);
-                select_top_by_playtime.push({
+                gamesArray.push({
                     game: game.game,
                     genre: game.genre,
                     platforms: game.platforms,
@@ -31,7 +65,7 @@ routes.get("/select_top_by_playtime", (req, res, next) => {
         } else {
             console.log('empty', game.game)
             uniqueGames.add(game.game);
-            select_top_by_playtime.push({
+            gamesArray.push({
                 game: game.game,
                 genre: game.genre,
                 platforms: game.platforms,
@@ -41,34 +75,24 @@ routes.get("/select_top_by_playtime", (req, res, next) => {
         }
     })
 
-    console.log(select_top_by_playtime);
-
-    // Filter games array in decending order according to game playtime.
-    select_top_by_playtime = select_top_by_playtime.sort(function (a, b) {
-        return b.totalPlayTime - a.totalPlayTime;
-    });
-
+    console.log(gamesArray);
+ 
     // Filter games array with the selected genre type.
     if(req.query.genre && req.query.genre !== '') {
-        select_top_by_playtime = select_top_by_playtime.filter( (game) => {
+        gamesArray = gamesArray.filter( (game) => {
             return game.genre.toLowerCase() == req.query.genre.toLowerCase();
         })
     }
-
+    
     // Filter games array with the selected platform type.
     if(req.query.platform && req.query.platform !== '') {
-        select_top_by_playtime = select_top_by_playtime.filter( (game) => {
+        gamesArray = gamesArray.filter( (game) => {
             return game.platforms.includes(req.query.platform.split('%20').join(' '));
         })
     }
 
-    // send res back to client
-    res.status(200).json({
-        message: 'Games fetched successfully!',
-        data: select_top_by_playtime,
-        code: 200
-    });
-})
+    return gamesArray;
+}
 
 function totalPlayerNumbers(gameName) {
     let playerCount = 0;
